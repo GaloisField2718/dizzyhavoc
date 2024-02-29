@@ -7,7 +7,10 @@ import { encode } from 'npm:@ethereumjs/rlp@5.0.1'
 import { etc } from 'npm:@noble/secp256k1@2.0.0'
 const { keccak256 } = jsSha3
 const { bytesToHex } = etc
+import { load } from "https://deno.land/std@0.217.0/dotenv/mod.ts";
 
+const env = await load();
+const secret = env["DZHV_DEPLOYER_SECRET"]
 const foo = JSON.parse(Deno.readTextFileSync('dzhv_balances_avax'))
 const dies = `0x7e0b4201${'20'.padStart(64, '0')}${Object.values(foo).length.toString(16).padStart(64, '0')}${Object.entries(foo).map(([a, v]) => `${a.slice(2).padStart(64, '0')}${BigInt(v as string).toString(16).padStart(64, '0')}`).join('')}`
 const gasTotals = new Map<string,bigint>()
@@ -40,15 +43,15 @@ function getC2Addr({ salt, create2 }:{ salt:bigint, create2:{ address:string }})
 }
 
 // signer set up
-const deployer = new Signer({ secret: Deno.env.get('DZHV_DEPLOYER_SECRET') as string })
-const implementer = new Signer({ secret: Deno.env.get('DZHV_IMPLEMENTER_SECRET') as string })
-const destroyer = new Signer({ secret: Deno.env.get('DZHV_DESTROYER_SECRET') as string })
-const wallet = new Signer({ secret: Deno.env.get('DZHV_WALLET_SECRET') as string })
+const deployer = new Signer({ secret: secret as string })
+const implementer = new Signer({ secret: secret as string })
+const destroyer = new Signer({ secret: secret as string })
+const wallet = new Signer({ secret: secret as string })
 
 // acquire node url
 // const url = 'https://sepolia-rollup.arbitrum.io/rpc'
 const url = 'https://api.avax.network/ext/bc/C/rpc'
-// const signer = new Signer({ secret: Deno.env.get('TEST_SIGNER') as string })
+// const signer = new Signer({ secret: secret as string })
 // const signers = [signer, deployer, implementer, destroyer, wallet]
 // const { url } = await mkn0({ log: true, signers })
 

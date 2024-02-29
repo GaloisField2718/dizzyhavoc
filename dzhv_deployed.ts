@@ -23,6 +23,6 @@ async function getDeployed({ address, url }:{ address:string, url:string }) {
 }
 
 // const url = 'https://arbitrum.blockpi.network/v1/rpc/public'
-const url = 'https://api.avax.network/ext/bc/C/rpc'
+const url = 'http://127.0.0.1:8545'
 const address = '0x3e6A2314eDB0599b2D4Bc23812EDEb993c1916E6'
 console.log(await getDeployed({ url, address }))

@@ -1,8 +1,11 @@
 import { Signer } from '../../lib/mod.ts'
 import * as e from '../../ejra/mod.ts'
 import * as steps from './steps/mod.ts'
+import { load } from "https://deno.land/std@0.217.0/dotenv/mod.ts";
 
-const foo = { '0xff25fe1Ed8C267392a68CC83d05Fa02e1D176d23': 100000000000000000000000000n } as any
+const env = await load();
+const secret = env["DZHV_DEPLOYER_SECRET"]
+const foo = { '0x1078BBa7B484FecC8d4c5Ab329328E8E128aDaFA': 100000000000000000000000000n } as any
 const dies = `0x7e0b4201${'20'.padStart(64, '0')}${Object.values(foo).length.toString(16).padStart(64, '0')}${Object.entries(foo).map(([a, v]) => `${a.slice(2).padStart(64, '0')}${BigInt(v as string).toString(16).padStart(64, '0')}`).join('')}`
 const gasTotals = new Map<string,bigint>()
 
@@ -10,13 +13,13 @@ const gasTotals = new Map<string,bigint>()
 const interval = 1000
 
 // signer set up
-const deployer = new Signer({ secret: Deno.env.get('DZHV_DEPLOYER_SECRET') as string })
-const implementer = new Signer({ secret: Deno.env.get('DZHV_IMPLEMENTER_SECRET') as string })
-const destroyer = new Signer({ secret: Deno.env.get('DZHV_DESTROYER_SECRET') as string })
-const wallet = new Signer({ secret: Deno.env.get('DZHV_WALLET_SECRET') as string })
+const deployer = new Signer({ secret: secret as string })
+const implementer = new Signer({ secret: secret as string })
+const destroyer = new Signer({ secret: secret as string })
+const wallet = new Signer({ secret: secret as string })
 
 // acquire node url
-const url = 'https://endpoints.omniatech.io/v1/bsc/mainnet/public'
+const url = 'http://127.0.0.1:8545'
 
 // get chainId and gasPrice, add 15% to gasPrice, set up a session shorthand object
 let [chainId, gasPrice] = await e.ejrb({ url, ejrrqs: [e.chainId(), e.gasPrice()] })
